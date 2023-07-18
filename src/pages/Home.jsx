@@ -478,7 +478,7 @@ function Home() {
                 </Upload>
               </div>
 
-              <div>
+              <div className="emc-hub-models">
                 {
                   Array.from(modelData,model=>{
                    let img;
@@ -502,14 +502,17 @@ function Home() {
                    let modelId=model.modelId;
 
                    return <Card
-                    bordered={false}
+                   hoverable
+    style={{ width: 240 }}
+                    bordered={true}
                     className="card-project"
                     cover={<img alt="example" 
-                    style={{    width: '280px'}}
+              
                     src={img||defaultCard} />}
                   >
+                    
                     <div className="card-tag">{cateGory1}</div>
-                    <h5>{modelId}</h5>
+                    <p>{modelId}</p>
                     <p>{cateGory2}</p>
                     <Row gutter={[6, 0]} className="card-footer">
                       <Col span={12}>
