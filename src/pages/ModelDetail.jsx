@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState,useEffect } from "react";
 
 import {
   Row,
@@ -21,6 +21,8 @@ import {
   VerticalAlignTopOutlined,
 } from "@ant-design/icons";
 
+import ModelCard from "../components/ModelCard"
+
 import BgProfile from "../assets/images/bg-profile.jpg";
 import profilavatar from "../assets/images/face-1.jpg";
 import convesionImg from "../assets/images/face-3.jpg";
@@ -32,9 +34,45 @@ import project1 from "../assets/images/home-decor-1.jpeg";
 import project2 from "../assets/images/home-decor-2.jpeg";
 import project3 from "../assets/images/home-decor-3.jpeg";
 
-function Profile() {
+
+
+import axios from 'axios';
+const baseURL = process.env.REACT_APP_BASE_URL
+
+const queryModelDetailInfo = async (modelId) => {
+  const { data } = await axios.post(baseURL + '/queryModelDetailInfo.do',
+  {"custId":"PUBLIC","bussData":{"model_id":modelId}},
+    {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+  if(data&&data.resultCode=='SUCCESS'&&data.bussData){
+    let {modelDetail,modelInfo}=data.bussData
+    modelDetail=JSON.parse(modelDetail);
+    modelInfo=JSON.parse(modelInfo)
+    console.log(modelDetail,modelInfo)
+    return {modelDetail,modelInfo}
+  }
+}
+
+
+
+function ModelDetail() {
   const [imageURL, setImageURL] = useState(false);
   const [, setLoading] = useState(false);
+  const [model,setModel]=useState({})
+
+  useEffect(() => {
+   const modelId= window.location.search.replace('?modelId=','')
+    queryModelDetailInfo(modelId).then(data=>{
+      console.log(data)
+      const {modelInfo,modelDetail}=data;
+setModel(modelInfo)
+    }) 
+  },[]);
+
+
 
   const getBase64 = (img, callback) => {
     const reader = new FileReader();
@@ -147,12 +185,9 @@ function Profile() {
   ];
 
   return (
-    <>
-      {/* <div
-        className="profile-nav-bg"
-        style={{ backgroundImage: "url(" + BgProfile + ")" }}
-      ></div> */}
-
+    <div style={{
+      marginTop: '72px'
+    }}>
       <Card
         className="card-profile-head"
         bodyStyle={{ display: "none" }}
@@ -177,59 +212,21 @@ function Profile() {
                 justifyContent: "flex-end",
               }}
             >
-              <Radio.Group defaultValue="a">
+              {/* <Radio.Group defaultValue="a">
                 <Radio.Button value="a">OVERVIEW</Radio.Button>
                 <Radio.Button value="b">TEAMS</Radio.Button>
                 <Radio.Button value="c">PROJECTS</Radio.Button>
-              </Radio.Group>
+              </Radio.Group> */}
             </Col>
           </Row>
         }
       ></Card>
 
       <Row gutter={[24, 0]}>
-        <Col span={24} md={8} className="mb-24 ">
-          <Card
-            bordered={false}
-            className="header-solid h-full"
-            title={<h6 className="font-semibold m-0">Platform Settings</h6>}
-          >
-            <ul className="list settings-list">
-              <li>
-                <h6 className="list-header text-sm text-muted">ACCOUNT</h6>
-              </li>
-              <li>
-                <Switch defaultChecked />
+        <Col span={24} md={16} className="mb-24 ">
 
-                <span>Email me when someone follows me</span>
-              </li>
-              <li>
-                <Switch />
-                <span>Email me when someone answers me</span>
-              </li>
-              <li>
-                <Switch defaultChecked />
-                <span>Email me when someone mentions me</span>
-              </li>
-              <li>
-                <h6 className="list-header text-sm text-muted m-0">
-                  APPLICATION
-                </h6>
-              </li>
-              <li>
-                <Switch defaultChecked />
-                <span>New launches and projects</span>
-              </li>
-              <li>
-                <Switch defaultChecked />
-                <span>Monthly product updates</span>
-              </li>
-              <li>
-                <Switch defaultChecked />
-                <span>Subscribe to newsletter</span>
-              </li>
-            </ul>
-          </Card>
+        {ModelCard(model,480) }
+
         </Col>
         <Col span={24} md={8} className="mb-24">
           <Card
@@ -274,7 +271,7 @@ function Profile() {
             </Descriptions>
           </Card>
         </Col>
-        <Col span={24} md={8} className="mb-24">
+        {/* <Col span={24} md={8} className="mb-24">
           <Card
             bordered={false}
             title={<h6 className="font-semibold m-0">Conversations</h6>}
@@ -299,9 +296,9 @@ function Profile() {
               )}
             />
           </Card>
-        </Col>
+        </Col> */}
       </Row>
-      <Card
+      {/* <Card
         bordered={false}
         className="header-solid mb-24"
         title={
@@ -356,9 +353,9 @@ function Profile() {
             </Upload>
           </Col>
         </Row>
-      </Card>
-    </>
+      </Card> */}
+    </div>
   );
 }
 
-export default Profile;
+export default ModelDetail;

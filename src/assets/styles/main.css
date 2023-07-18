@@ -1,7 +1,7 @@
 body {
     width: calc(100% - 60px) !important;
     margin: 0;
-    padding: 30px;
+    padding: 8px 30px;
     background-color: #fafafa;
     letter-spacing: -0.3px;
     color: rgba(0, 0, 0, 0.65);
@@ -1117,7 +1117,7 @@ span.blue {
 }
 
 .uploadfile {
-    margin-top: 15px;
+    /* margin-top: 15px; */
 }
 
 .uploadfile .ant-upload.ant-upload-select {
@@ -3058,7 +3058,7 @@ section.ant-layout.ant-layout-has-sider.layout-dashboard.layout-profile .header-
     display: flex;
     flex-direction: row;
     background-color: #eee;
-    padding: 24px;
+    padding: 12px;
     align-items: center;
 }
 
@@ -3102,7 +3102,7 @@ section.ant-layout.ant-layout-has-sider.layout-dashboard.layout-profile .header-
 .emc-hub-nav ul {
     display: flex;
     justify-content: space-between;
-    width: 112px;
+    width: 120px;
     list-style: none;
 }
 
@@ -3116,4 +3116,10 @@ section.ant-layout.ant-layout-has-sider.layout-dashboard.layout-profile .header-
     flex-wrap: wrap;
     justify-content: space-around;
     align-items: flex-start;
+}
+
+.emc-hub-upload {
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }

@@ -1,5 +1,5 @@
 import { useState,useEffect } from "react";
-
+import {  Link } from "react-router-dom";
 import {
   Card,
   Col,
@@ -10,8 +10,9 @@ import {
   Upload,
   message,
   Button,
-  Timeline,
-  Radio,
+  Tag,
+  Space,
+  Radio,FloatButton 
 } from "antd";
 import {
   ToTopOutlined,
@@ -22,6 +23,9 @@ import Paragraph from "antd/lib/typography/Paragraph";
 
 import Echart from "../components/chart/EChart";
 import LineChart from "../components/chart/LineChart";
+
+
+import ModelCard from "../components/ModelCard"
 
 import ava1 from "../assets/images/logo-shopify.svg";
 import ava2 from "../assets/images/logo-atlassian.svg";
@@ -34,12 +38,11 @@ import team2 from "../assets/images/team-2.jpg";
 import team3 from "../assets/images/team-3.jpg";
 import team4 from "../assets/images/team-4.jpg";
 import card from "../assets/images/00047-212406482.png";
-import defaultCard from "../assets/images/00068-212406485.png";
+
 
 // import modelsAPI from '../api/models'
 
 import axios from 'axios';
-
 const baseURL = process.env.REACT_APP_BASE_URL
 
 const getByPage = async () => {
@@ -58,7 +61,6 @@ const getByPage = async () => {
     // console.log(modelList)
     return modelList
   }
- 
 }
 
 
@@ -371,7 +373,7 @@ function Home() {
     <>
       <div className="layout-content">
       
-      <Row gutter={[24, 0]}>
+      <Row gutter={[24, 0]}  style={{marginBottom:24}}>
 
         {/* NFT 预告 */}
         <Col xs={24} md={12} sm={24} lg={12} xl={10} className="mb-24">
@@ -450,84 +452,49 @@ function Home() {
 
               <div className="project-ant">
                 <div>
-                  <Title level={5}>Models</Title>
+                 <div>
+                 <Title level={5}>Models</Title>
                   <Paragraph className="lastweek">
-                    done this month<span className="blue">40%</span>
+                  Total<span className="blue">20</span>
                   </Paragraph>
+                  </div> 
                 </div>
-                <div className="ant-filtertabs">
-                  <div className="antd-pro-pages-dashboard-analysis-style-salesExtra">
-                    <Radio.Group onChange={onChange} defaultValue="a">
-                      <Radio.Button value="a">ALL</Radio.Button>
-                      {/* <Radio.Button value="b">ONLINE</Radio.Button>
-                      <Radio.Button value="c">STORES</Radio.Button> */}
-                    </Radio.Group>
-                  </div>
-                </div>
-              </div>
+                <div className="ant-filtertabs emc-hub-upload">
 
-              <div className="uploadfile shadow-none">
-                <Upload {...uploadProps}>
-                  <Button
+                <div className="uploadfile shadow-none">
+
+                <Button
                     type="dashed"
                     className="ant-full-box"
                     icon={<ToTopOutlined />}
                   >
-                    <span className="click">Click to Upload</span>
+                  <Link to="/uploadModel">Click to Upload</Link>
                   </Button>
-                </Upload>
+                  
+
+                </div>
+
+                  <div className="antd-pro-pages-dashboard-analysis-style-salesExtra">
+                    <Radio.Group onChange={onChange} defaultValue="ALL">
+                      <Radio.Button value="ALL">ALL</Radio.Button>
+                      <Radio.Button value="CHECKPOINT">CHECKPOINT</Radio.Button>
+                      <Radio.Button value="LORA">LORA</Radio.Button>
+                      <Radio.Button value="CONTROLNET">CONTROLNET</Radio.Button>
+                      <Radio.Button value="OTHER">OTHER</Radio.Button>
+                    </Radio.Group>
+                  </div>
+
+                </div>
               </div>
+
+             
 
               <div className="emc-hub-models">
                 {
                   Array.from(modelData,model=>{
-                   let img;
-                   if(model.modelCover&&model.modelCover.coverImgList ){
-                    let modelCover= model.modelCover
-                    img=modelCover.coverImgList[0];
-                    
-                    try {
-                      if(typeof(img)=='string') img=JSON.parse(img)[0]
-                    } catch (error) {
-                      
-                    }
-                    if(img&&img.length>0)img=img[0]
-                    
-                   }
-                   let cateGory1=model.cateGory1,
-                   cateGory2=model.cateGory2||[];
-
-                   if(cateGory2&&typeof(cateGory2)==='string') cateGory2=cateGory2.split(",").filter(f=>f);
-
-                   let modelId=model.modelId;
-
-                   return <Card
-                   hoverable
-    style={{ width: 240 }}
-                    bordered={true}
-                    className="card-project"
-                    cover={<img alt="example" 
-              
-                    src={img||defaultCard} />}
-                  >
-                    
-                    <div className="card-tag">{cateGory1}</div>
-                    <p>{modelId}</p>
-                    <p>{cateGory2}</p>
-                    <Row gutter={[6, 0]} className="card-footer">
-                      <Col span={12}>
-                        <Button type="button">VIEW MODEL</Button>
-                      </Col>
-                      <Col span={12} className="text-right">
-                        {/* <Avatar.Group className="avatar-chips">
-                          <Avatar size="small" src={profilavatar} />
-                          <Avatar size="small" src={convesionImg} />
-                          <Avatar size="small" src={convesionImg2} />
-                          <Avatar size="small" src={convesionImg3} />
-                        </Avatar.Group> */}
-                      </Col>
-                    </Row>
-                  </Card>
+                   return <Link to={`/modelDetail?modelId=${model.modelId}`}>
+                    {ModelCard(model) }
+                   </Link>
                   })
                 }
                
@@ -538,7 +505,7 @@ function Home() {
        
         </Row>
 
-        
+        <FloatButton.BackTop />
       </div>
     </>
   );

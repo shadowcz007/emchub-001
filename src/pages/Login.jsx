@@ -11,7 +11,7 @@ import {
   Input,
   Switch,
 } from "antd";
-import signinbg from "../assets/images/img-signin.jpg";
+import signinbg from "../assets/images/00080-212406488.png";
 import {
   DribbbleOutlined,
   TwitterOutlined,
@@ -106,7 +106,16 @@ const signin = [
 export default class SignIn extends Component {
   render() {
     const onFinish = (values) => {
-      console.log("Success:", values);
+      
+      const res= {"custId":values.custId,
+      "bussData":{
+        "identityType":"PASSWD",
+        "authToken":values.authToken,
+        "identiType":"PASSWD"
+      }}
+
+      console.log("Success:", JSON.stringify(res,null,2));
+
     };
 
     const onFinishFailed = (errorInfo) => {
@@ -160,7 +169,7 @@ export default class SignIn extends Component {
               >
                 <Title className="mb-15">Sign In</Title>
                 <Title className="font-regular text-muted" level={5}>
-                  Enter your email and password to sign in
+                  Enter your ID and password to sign in
                 </Title>
                 <Form
                   onFinish={onFinish}
@@ -170,40 +179,40 @@ export default class SignIn extends Component {
                 >
                   <Form.Item
                     className="username"
-                    label="Email"
-                    name="email"
+                    label="ID"
+                    name="custId"
                     rules={[
                       {
                         required: true,
-                        message: "Please input your email!",
+                        message: "Please input your ID !",
                       },
                     ]}
                   >
-                    <Input placeholder="Email" />
+                    <Input placeholder="User LogIn Id" />
                   </Form.Item>
 
                   <Form.Item
                     className="username"
-                    label="Password"
-                    name="password"
+                    label="Auth Token"
+                    name="authToken"
                     rules={[
                       {
                         required: true,
-                        message: "Please input your password!",
+                        message: "Please input your AuthToken!",
                       },
                     ]}
                   >
-                    <Input placeholder="Password" />
+                    <Input placeholder="AuthToken" />
                   </Form.Item>
 
-                  <Form.Item
+                  {/* <Form.Item
                     name="remember"
                     className="aligin-center"
                     valuePropName="checked"
                   >
                     <Switch defaultChecked onChange={onChange} />
                     Remember me
-                  </Form.Item>
+                  </Form.Item> */}
 
                   <Form.Item>
                     <Button
@@ -216,7 +225,7 @@ export default class SignIn extends Component {
                   </Form.Item>
                   <p className="font-semibold text-muted">
                     Don't have an account?{" "}
-                    <Link to="/sign-up" className="text-dark font-bold">
+                    <Link to="/signup" className="text-dark font-bold">
                       Sign Up
                     </Link>
                   </p>

@@ -1,14 +1,3 @@
-/*!
-=========================================================
-* Muse Ant Design Dashboard - v1.0.0
-=========================================================
-* Product Page: https://www.creative-tim.com/product/muse-ant-design-dashboard
-* Copyright 2021 Creative Tim (https://www.creative-tim.com)
-* Licensed under MIT (https://github.com/creativetimofficial/muse-ant-design-dashboard/blob/main/LICENSE.md)
-* Coded by Creative Tim
-=========================================================
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
 import React, { Component } from "react";
 import {
   Layout,
@@ -117,7 +106,20 @@ const signin = [
 export default class SignUp extends Component {
   render() {
     const onFinish = (values) => {
-      console.log("Success:", values);
+
+      const res={
+        "actionCode":"register",
+      "bussData":{
+        "applRegInfo":
+        JSON.stringify(values)
+      }
+      }
+
+      console.log("Success:", JSON.stringify(res,null,2));
+
+      // 跳转至登录界面
+      setTimeout(()=>console.log(1),2000)
+
     };
 
     const onFinishFailed = (errorInfo) => {
@@ -130,37 +132,6 @@ export default class SignUp extends Component {
             <div className="header-col header-brand">
               <h5>Muse Dashboard</h5>
             </div>
-            <div className="header-col header-nav">
-              <Menu mode="horizontal" defaultSelectedKeys={["1"]}>
-                <Menu.Item key="1">
-                  <Link to="/dashboard">
-                    {template}
-                    <span> Dashboard</span>
-                  </Link>
-                </Menu.Item>
-                <Menu.Item key="2">
-                  <Link to="/profile">
-                    {profile}
-                    <span>Profile</span>
-                  </Link>
-                </Menu.Item>
-                <Menu.Item key="3">
-                  <Link to="/sign-up">
-                    {signup}
-                    <span> Sign Up</span>
-                  </Link>
-                </Menu.Item>
-                <Menu.Item key="4">
-                  <Link to="/sign-in">
-                    {signin}
-                    <span> Sign In</span>
-                  </Link>
-                </Menu.Item>
-              </Menu>
-            </div>
-            <div className="header-col header-btn">
-              <Button type="false">FREE DOWNLOAD</Button>
-            </div>
           </Header>
 
           <Content className="p-0">
@@ -168,8 +139,7 @@ export default class SignUp extends Component {
               <div className="content">
                 <Title>Sign Up</Title>
                 <p className="text-lg">
-                  Use these awesome forms to login or create new account in your
-                  project for free.
+                Welcome to the new era of AI.
                 </p>
               </div>
             </div>
@@ -179,7 +149,7 @@ export default class SignUp extends Component {
               title={<h5>Register With</h5>}
               bordered="false"
             >
-              <div className="sign-up-gateways">
+              {/* <div className="sign-up-gateways">
                 <Button type="false">
                   <img src={logo1} alt="logo 1" />
                 </Button>
@@ -190,7 +160,7 @@ export default class SignUp extends Component {
                   <img src={logo3} alt="logo 3" />
                 </Button>
               </div>
-              <p className="text-center my-25 font-semibold text-muted">Or</p>
+              <p className="text-center my-25 font-semibold text-muted">Or</p> */}
               <Form
                 name="basic"
                 initialValues={{ remember: true }}
@@ -199,12 +169,20 @@ export default class SignUp extends Component {
                 className="row-col"
               >
                 <Form.Item
-                  name="Name"
+                  name="loginId"
                   rules={[
-                    { required: true, message: "Please input your username!" },
+                    { required: true, message: "Please input your loginId!" },
                   ]}
                 >
-                  <Input placeholder="Name" />
+                  <Input placeholder="loginId" />
+                </Form.Item>
+                <Form.Item
+                  name="nickName"
+                  rules={[
+                    { required: true, message: "Please input your nickName!" },
+                  ]}
+                >
+                  <Input placeholder="nickName" />
                 </Form.Item>
                 <Form.Item
                   name="email"
@@ -214,19 +192,31 @@ export default class SignUp extends Component {
                 >
                   <Input placeholder="email" />
                 </Form.Item>
+
                 <Form.Item
-                  name="password"
+                  name="mobilePhone"
                   rules={[
-                    { required: true, message: "Please input your password!" },
+                    { required: true, message: "Please input your mobilePhone!" },
                   ]}
                 >
-                  <Input placeholder="Passwoed" />
+                  <Input placeholder="mobilePhone" />
                 </Form.Item>
+                
+                <Form.Item
+                  name="authToken"
+                  required
+                  rules={[
+                    { required: true, message: "Please input your authToken!" },
+                  ]}
+                >
+                  <Input placeholder="authToken" />
+                </Form.Item>
+
 
                 <Form.Item name="remember" valuePropName="checked">
                   <Checkbox>
                     I agree the{" "}
-                    <a href="#pablo" className="font-bold text-dark">
+                    <a href="#" className="font-bold text-dark">
                       Terms and Conditions
                     </a>
                   </Checkbox>
@@ -244,7 +234,7 @@ export default class SignUp extends Component {
               </Form>
               <p className="font-semibold text-muted text-center">
                 Already have an account?{" "}
-                <Link to="/sign-in" className="font-bold text-dark">
+                <Link to="/login" className="font-bold text-dark">
                   Sign In
                 </Link>
               </p>
@@ -252,24 +242,24 @@ export default class SignUp extends Component {
           </Content>
           <Footer>
             <Menu mode="horizontal">
-              <Menu.Item>Company</Menu.Item>
+              {/* <Menu.Item>Company</Menu.Item> */}
               <Menu.Item>About Us</Menu.Item>
-              <Menu.Item>Teams</Menu.Item>
+              {/* <Menu.Item>Teams</Menu.Item>
               <Menu.Item>Products</Menu.Item>
               <Menu.Item>Blogs</Menu.Item>
-              <Menu.Item>Pricing</Menu.Item>
+              <Menu.Item>Pricing</Menu.Item> */}
             </Menu>
             <Menu mode="horizontal" className="menu-nav-social">
-              <Menu.Item>
+              {/* <Menu.Item>
                 <Link to="#">{<DribbbleOutlined />}</Link>
-              </Menu.Item>
+              </Menu.Item> */}
               <Menu.Item>
                 <Link to="#">{<TwitterOutlined />}</Link>
               </Menu.Item>
-              <Menu.Item>
+              {/* <Menu.Item>
                 <Link to="#">{<InstagramOutlined />}</Link>
-              </Menu.Item>
-              <Menu.Item>
+              </Menu.Item> */}
+              {/* <Menu.Item>
                 <Link to="#">
                   <svg
                     width="18"
@@ -280,14 +270,14 @@ export default class SignUp extends Component {
                     <path d="M496 256c0 137-111 248-248 248-25.6 0-50.2-3.9-73.4-11.1 10.1-16.5 25.2-43.5 30.8-65 3-11.6 15.4-59 15.4-59 8.1 15.4 31.7 28.5 56.8 28.5 74.8 0 128.7-68.8 128.7-154.3 0-81.9-66.9-143.2-152.9-143.2-107 0-163.9 71.8-163.9 150.1 0 36.4 19.4 81.7 50.3 96.1 4.7 2.2 7.2 1.2 8.3-3.3.8-3.4 5-20.3 6.9-28.1.6-2.5.3-4.7-1.7-7.1-10.1-12.5-18.3-35.3-18.3-56.6 0-54.7 41.4-107.6 112-107.6 60.9 0 103.6 41.5 103.6 100.9 0 67.1-33.9 113.6-78 113.6-24.3 0-42.6-20.1-36.7-44.8 7-29.5 20.5-61.3 20.5-82.6 0-19-10.2-34.9-31.4-34.9-24.9 0-44.9 25.7-44.9 60.2 0 22 7.4 36.8 7.4 36.8s-24.5 103.8-29 123.2c-5 21.4-3 51.6-.9 71.2C65.4 450.9 0 361.1 0 256 0 119 111 8 248 8s248 111 248 248z"></path>
                   </svg>
                 </Link>
-              </Menu.Item>
+              </Menu.Item> */}
               <Menu.Item>
                 <Link to="#">{<GithubOutlined />}</Link>
               </Menu.Item>
             </Menu>
             <p className="copyright">
               {" "}
-              Copyright © 2021 Muse by <a href="#pablo">Creative Tim</a>.{" "}
+              Copyright © 2023 EMC HUB by <a href="https://github.com/EMCProtocol-dev">EMCProtocol-dev</a>.{" "}
             </p>
           </Footer>
         </div>

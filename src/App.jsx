@@ -2,9 +2,11 @@ import { Routes, Route, Outlet, Link } from "react-router-dom";
 
 
 import Home from './pages/Home'
-import Profile from './pages/Profile'
+import ModelDetail from './pages/ModelDetail'
 import Rtl from './pages/Rtl'
 import Login from './pages/Login'
+import SignUp from './pages/SignUp'
+import UploadModel from './pages/UploadModel'
 
 import BgProfile from "./assets/images/bg-profile.jpg";
 
@@ -29,7 +31,11 @@ export default function App() {
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
           <Route path="login" element={<Login />} />
-          {/* <Route path="dashboard" element={<Dashboard />} />
+          <Route path="uploadModel" element={<UploadModel />} />
+          <Route path="signUp" element={<SignUp />} />
+          <Route path="modelDetail" element={<ModelDetail />} />
+          
+          {/* 
           <Route path="*" element={<NoMatch />} /> */}
         </Route>
       </Routes>
@@ -47,9 +53,13 @@ function Layout() {
           <li>
             <Link to="/">Home</Link>
           </li>
+          {/* <li>
+            <Link to="/uploadModel">Upload Model</Link>
+          </li> */}
           <li>
             <Link to="/login">Login</Link>
           </li>
+          
           {/* <li>
             <Link to="/dashboard">Dashboard</Link>
           </li>
