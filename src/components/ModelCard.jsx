@@ -4,7 +4,7 @@ import {
     Card,
     Tag,
     Space,
-    Descriptions,
+    Tooltip,
     Avatar,
     Radio,
     Switch,
@@ -64,12 +64,16 @@ const card=(model,width=240)=>{
      cover={<img alt={modelName||''} 
      src={img||defaultCard} />}
    >
-    <Tag 
+
+<Tooltip placement="top" title={modelId}>
+<Tag 
     style={{width:120,marginBottom:12}}
     color={'orange'}
     ><EllipsisMiddle suffixCount={12}>
-{modelId}
+{modelName||''}
 </EllipsisMiddle></Tag>
+        </Tooltip>
+
     
      <Space size={[0, 8]} wrap>
        {
