@@ -47,10 +47,15 @@ const queryModelDetailInfo = async (modelId) => {
         'Content-Type': 'application/json'
       }
     })
-  if(data&&data.resultCode=='SUCCESS'&&data.bussData){
-    let {modelDetail,modelInfo}=data.bussData
-    modelDetail=JSON.parse(modelDetail);
-    modelInfo=JSON.parse(modelInfo)
+  if(data&&data.resultCode=='SUCCESS'&&data.bussData&&data.bussData.modelInfo&&data.bussData.modelDetail){
+    let {modelDetail,modelInfo}=data.bussData;
+    try {
+      modelDetail=JSON.parse(modelDetail);
+      modelInfo=JSON.parse(modelInfo)
+    } catch (error) {
+      
+    }
+    
     // console.log(modelDetail,modelInfo)
     return {modelDetail,modelInfo}
   }
@@ -68,11 +73,20 @@ function ModelDetail() {
    const modelId= window.location.search.replace('?modelId=','')
     queryModelDetailInfo(modelId).then(data=>{
       console.log(data)
-      const {modelInfo,modelDetail}=data;
-      setModel(modelInfo)
-      setModelDetail(modelDetail)
+      if(data){
+        const {modelInfo,modelDetail}=data;
+        setModel(modelInfo)
+        setModelDetail(modelDetail)
+      }
+      
     }) 
   },[]);
+
+  const tags=[model.cateGory1]
+
+  if(model.cateGory2){
+    Array.from(model.cateGory2.split(','),t=>t&&tags.push(t))
+  }
 
   return (
     <div style={{
@@ -130,20 +144,20 @@ function ModelDetail() {
           >
 
 {
-         Array.from([model.cateGory1,...model.cateGory2.split(',')].filter(f=>f),(c,i)=><Tag color={'blue'}>{c}</Tag>)
+         Array.from(tags.filter(f=>f),(c,i)=><Tag color={'blue'}>{c}</Tag>)
        }
 <Descriptions >
 
               <Descriptions.Item label="version" span={3}>
-                {modelDetail.version}
+                {modelDetail&&modelDetail.version}
               </Descriptions.Item>
 
               <Descriptions.Item label="ID" span={3}>
-               {modelDetail.modelId}
+               {modelDetail&&modelDetail.modelId}
               </Descriptions.Item>
           
               <Descriptions.Item label="downLoadLink" span={3}>
-               {modelDetail.downLoadLink}
+               {modelDetail&&modelDetail.downLoadLink}
               </Descriptions.Item>
           
               {/* <Descriptions.Item label="Social" span={3}>
@@ -161,14 +175,14 @@ function ModelDetail() {
             <hr className="my-25" />
  
             <p className="text-dark">
-              {" "}{modelDetail.commonParams}{" "}
+              {" "}{modelDetail&&modelDetail.commonParams}{" "}
             </p>
 
             <p>
-              {modelDetail.positivePromts}
+              {modelDetail&&modelDetail.positivePromts}
             </p>
             <p>
-              {modelDetail.negativePromts}
+              {modelDetail&&modelDetail.negativePromts}
             </p>
             
             

@@ -130,7 +130,7 @@ export default class SignUp extends Component {
         <div className="layout-default ant-layout layout-sign-up">
           <Header>
             <div className="header-col header-brand">
-              <h5>Muse Dashboard</h5>
+              <h5>(blue color background ),(infinity symbol), (square-shaped), (distinctive logo),3d,c4d,blender,uegel, generative art</h5>
             </div>
           </Header>
 

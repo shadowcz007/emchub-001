@@ -386,7 +386,7 @@ function Home() {
                   </p>
                 </div>
                 <div className="card-footer">
-                  <a className="icon-move-right" href="#pablo">
+                  <a className="icon-move-right" href="#">
                     Read More
                     <RightOutlined />
                   </a>
@@ -463,14 +463,15 @@ function Home() {
 
                 <div className="uploadfile shadow-none">
 
+                <Link to="/uploadModel">
                 <Button
                     type="dashed"
                     className="ant-full-box"
                     icon={<ToTopOutlined />}
                   >
-                  <Link to="/uploadModel">Click to Upload</Link>
+                 Click to Upload
                   </Button>
-                  
+                  </Link>
 
                 </div>
 
