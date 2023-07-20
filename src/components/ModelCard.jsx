@@ -5,7 +5,7 @@ import {
     Tag,
     Space,
     Tooltip,
-    Avatar,
+    Carousel,
     Radio,
     Switch,
     Upload,
@@ -33,53 +33,62 @@ import {
   
 
 const card=(model,width=240)=>{
+  // console.log(model)
+  model=model||{}
+  let imgs=model.sampleImgFileLinks||[];
+  if(imgs.length==0)imgs=[defaultCard]
+  
+  let category1=model.category1,
+   cateGory2=model.cateGory2||[];
 
-  let img;
-                   if(model.modelCover&&model.modelCover.coverImgList ){
-                    let modelCover= model.modelCover
-                    img=modelCover.coverImgList[0];
-                    
-                    try {
-                      if(typeof(img)=='string') img=JSON.parse(img)[0]
-                    } catch (error) {
-                      
-                    }
-                    if(img&&img.length>0)img=img[0];
+  if(cateGory2&&typeof(cateGory2)==='string') cateGory2=cateGory2.split(",");
 
-                    if(img&&img.length<3) img=''
-                    
-                   }
-                   let cateGory1=model.cateGory1,
-                   cateGory2=model.cateGory2||[];
-
-                   if(cateGory2&&typeof(cateGory2)==='string') cateGory2=cateGory2.split(",");
-
-                   let modelId=model.modelId,modelName=model.modelName;
+  let modelId=model.modelId,modelName=model.modelName;
 
     return <Card
     hoverable
-   style={{ width,margin:24 }}
+    style={{ width,margin:24,minHeight:400 }}
      bordered={true}
      className="card-project"
-     cover={<img alt={modelName||''} 
-     src={img||defaultCard} />}
+     cover={<Carousel autoplay>
+      {
+        Array.from(imgs,img=>{
+        return <div>
+          <img alt={modelName||'-'} 
+              src={img||defaultCard} 
+            style={{
+              minHeight:300,
+              width:width, 
+            }}  
+            />
+        </div>
+        })
+      }
+    </Carousel>}
    >
 
+<div style={{padding:8}}>
+ 
+
 <Tooltip placement="top" title={modelId}>
-<Tag 
+  
+  <Tag 
     style={{width:120,marginBottom:12}}
     color={'orange'}
     ><EllipsisMiddle suffixCount={12}>
-{modelName||''}
-</EllipsisMiddle></Tag>
+      {modelName||'-'}
+      </EllipsisMiddle></Tag>
         </Tooltip>
 
-    
+
      <Space size={[0, 8]} wrap>
        {
-         Array.from([cateGory1,...cateGory2].filter(f=>f),(c,i)=><Tag color={i==0?'blue':getRandomColor()}>{c}</Tag>)
+         Array.from([category1,...cateGory2].filter(f=>f),(c,i)=><Tag color={i==0?'blue':getRandomColor()}>{c}</Tag>)
        }
    </Space>
+   
+   </div>
+  
     
      {/* <Row gutter={[6, 0]} className="card-footer">
        <Col span={12}>

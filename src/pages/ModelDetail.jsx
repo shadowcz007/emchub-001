@@ -14,80 +14,79 @@ import {
   message,
 } from "antd";
 
-import {
-  FacebookOutlined,
-  TwitterOutlined,
-  InstagramOutlined,
-  VerticalAlignTopOutlined,
-} from "@ant-design/icons";
-
 import ModelCard from "../components/ModelCard"
-
-import BgProfile from "../assets/images/bg-profile.jpg";
-import profilavatar from "../assets/images/face-1.jpg";
-import convesionImg from "../assets/images/face-3.jpg";
-import convesionImg2 from "../assets/images/face-4.jpg";
-import convesionImg3 from "../assets/images/face-5.jpeg";
-import convesionImg4 from "../assets/images/face-6.jpeg";
-import convesionImg5 from "../assets/images/face-2.jpg";
-import project1 from "../assets/images/home-decor-1.jpeg";
-import project2 from "../assets/images/home-decor-2.jpeg";
-import project3 from "../assets/images/home-decor-3.jpeg";
-
-
 
 import axios from 'axios';
 const baseURL = process.env.REACT_APP_BASE_URL
 
-const queryModelDetailInfo = async (modelId) => {
+const queryModelDetailInfo = async (custId,modelId) => {
   const { data } = await axios.post(baseURL + '/queryModelDetailInfo.do',
-  {"custId":"PUBLIC","bussData":{"model_id":modelId}},
+  {custId,bussData:{"modelId":modelId}},
     {
       headers: {
         'Content-Type': 'application/json'
       }
     })
-  if(data&&data.resultCode=='SUCCESS'&&data.bussData&&data.bussData.modelInfo&&data.bussData.modelDetail){
-    let {modelDetail,modelInfo}=data.bussData;
-    try {
-      modelDetail=JSON.parse(modelDetail);
-      modelInfo=JSON.parse(modelInfo)
-    } catch (error) {
-      
-    }
-    
+  if(data&&data.resultCode=='SUCCESS'&&data.bussData){
+    let { 
+      modelName,
+      modelFileLinks,
+      sampleImgFileLinks,
+      modelSubName,
+      modelFileHashCodes,
+      modelId,
+      version,
+      modelFileNames,
+      negativePrompt,
+      positivePromts
+    }=data.bussData;
     // console.log(modelDetail,modelInfo)
-    return {modelDetail,modelInfo}
+    return {
+    modelSubName:modelSubName?modelSubName.split(",").filter(f=>f):[],
+    modelName,
+    modelFileLinks,
+    sampleImgFileLinks:sampleImgFileLinks?sampleImgFileLinks.split(",").filter(f=>f):[],
+    modelFileHashCodes,
+    modelId,
+    version:version||1,
+    modelFileNames,
+    negativePrompt,
+    positivePromts
+  }
   }
 }
 
 
 
 function ModelDetail() {
-  
+  const custId=localStorage.getItem('_emc_hub_custId')||'';
   const [, setLoading] = useState(false);
   const [model,setModel]=useState({})
   const [modelDetail,setModelDetail]=useState({})
 
   useEffect(() => {
    const modelId= window.location.search.replace('?modelId=','')
-    queryModelDetailInfo(modelId).then(data=>{
-      console.log(data)
+    queryModelDetailInfo(custId,modelId).then(data=>{
+      console.log('queryModelDetailInfo',data)
       if(data){
-        const {modelInfo,modelDetail}=data;
-        setModel(modelInfo)
-        setModelDetail(modelDetail)
+        // const {modelInfo,modelDetail}=data;
+        setModel(data)
+        setModelDetail(data)
       }
-      
     }) 
   },[]);
 
-  const tags=[model.cateGory1]
+  let tags=[model.category1]
 
   if(model.cateGory2){
     Array.from(model.cateGory2.split(','),t=>t&&tags.push(t))
   }
 
+  if(model.modelSubName){
+    tags=[...tags,...model.modelSubName].filter(f=>f)
+  }
+
+  // console.log('tag',tags)
   return (
     <div style={{
       marginTop: '12px'
@@ -156,9 +155,13 @@ function ModelDetail() {
                {modelDetail&&modelDetail.modelId}
               </Descriptions.Item>
           
+              {modelDetail&&modelDetail.modelFileLinks?
               <Descriptions.Item label="downLoadLink" span={3}>
-               {modelDetail&&modelDetail.downLoadLink}
-              </Descriptions.Item>
+                <a href={modelDetail.modelFileLinks}>URL</a>
+              </Descriptions.Item>:''
+              }
+
+              
           
               {/* <Descriptions.Item label="Social" span={3}>
                 <a href="#pablo" className="mx-5 px-5">
@@ -178,14 +181,19 @@ function ModelDetail() {
               {" "}{modelDetail&&modelDetail.commonParams}{" "}
             </p>
 
+{modelDetail&&modelDetail.positivePromts?<>
+  <p>Positive Promts:</p>
             <p>
               {modelDetail&&modelDetail.positivePromts}
-            </p>
-            <p>
-              {modelDetail&&modelDetail.negativePromts}
-            </p>
-            
-            
+            </p></>:''}
+         
+         {
+          modelDetail&&modelDetail.negativePromts?<> <p>Negative Promts:</p>
+          <p>
+            {modelDetail&&modelDetail.negativePromts}
+          </p></>:''
+         }
+              
           </Card>
         </Col>
         {/* <Col span={24} md={8} className="mb-24">

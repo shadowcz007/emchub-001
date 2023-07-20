@@ -980,7 +980,7 @@ span.blue {
 }
 
 .project-ant {
-    display: flex;
+    display: flex!important;
     align-items: center;
     justify-content: space-between;
 }
@@ -1765,7 +1765,7 @@ body {
 .sign-up-header {
     height: 550px;
     margin-top: -62.8px;
-    padding-top: 137.8px;
+    padding-top: 72px;
     border-radius: 12px;
     box-shadow: 0 20px 27px rgb(0 0 0 / 5%);
     background-size: cover;
@@ -2749,11 +2749,6 @@ section.ant-layout.ant-layout-has-sider.layout-dashboard.layout-profile .btn-sig
     margin-bottom: 0;
 }
 
-.card-project.ant-card {
-    box-shadow: none;
-    border: none;
-}
-
 .card-project.ant-card .ant-card-cover img {
     border-radius: 8px;
     box-shadow: 0 4px 6px rgb(0 0 0 / 12%);
@@ -3122,4 +3117,14 @@ section.ant-layout.ant-layout-has-sider.layout-dashboard.layout-profile .header-
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+.emc-hub-loading {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 9999999;
+    background-color: #cfd6e7;
+    width: 100%;
+    height: 100%;
 }
