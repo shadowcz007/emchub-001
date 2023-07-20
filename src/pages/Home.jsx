@@ -144,27 +144,22 @@ function Home() {
               </Row>
             </Card>
           </Col>
-
-
         </Row>
 
-
         {/* 模型市场 */}
-
         <Row gutter={[24, 0]}>
           <Col xs={24} sm={24} md={24} lg={24} xl={24} className="mb-24">
             <Card bordered={false} className="criclebox cardbody h-full">
-
-
               <div className="project-ant">
-                <div>
-                 <div>
+              <div style={{
+                  display:'flex',
+                  flexDirection:'column'
+                 }}>
                  <Title level={5}>Models</Title>
                   <Paragraph className="lastweek">
                   Total<span className="blue">{totalNum}</span>
                   </Paragraph>
                   </div> 
-                </div>
                 <div className="ant-filtertabs emc-hub-upload">
 
                 <div className="uploadfile shadow-none">

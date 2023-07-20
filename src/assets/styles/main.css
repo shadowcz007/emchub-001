@@ -980,7 +980,7 @@ span.blue {
 }
 
 .project-ant {
-    display: flex;
+    display: flex!important;
     align-items: center;
     justify-content: space-between;
 }
