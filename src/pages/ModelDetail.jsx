@@ -27,17 +27,26 @@ const queryModelDetailInfo = async (custId,modelId) => {
         'Content-Type': 'application/json'
       }
     })
-  if(data&&data.resultCode=='SUCCESS'&&data.bussData&&data.bussData.modelInfo&&data.bussData.modelDetail){
-    let {modelDetail,modelInfo}=data.bussData;
-    try {
-      modelDetail=JSON.parse(modelDetail);
-      modelInfo=JSON.parse(modelInfo)
-    } catch (error) {
-      
-    }
-    
+  if(data&&data.resultCode=='SUCCESS'&&data.bussData){
+    let { 
+      modelName,
+      modelFileLinks,
+      modelSubName,
+      modelFileHashCodes,
+      modelId,
+      version,
+      modelFileNames
+    }=data.bussData;
     // console.log(modelDetail,modelInfo)
-    return {modelDetail,modelInfo}
+    return {
+      modelSubName:modelSubName.split(",").filter(f=>f),
+    modelName,
+    modelFileLinks,
+    modelFileHashCodes,
+    modelId,
+    version,
+    modelFileNames
+  }
   }
 }
 
@@ -52,22 +61,26 @@ function ModelDetail() {
   useEffect(() => {
    const modelId= window.location.search.replace('?modelId=','')
     queryModelDetailInfo(custId,modelId).then(data=>{
-      console.log(data)
+      console.log('queryModelDetailInfo',data)
       if(data){
-        const {modelInfo,modelDetail}=data;
-        setModel(modelInfo)
-        setModelDetail(modelDetail)
+        // const {modelInfo,modelDetail}=data;
+        setModel(data)
+        setModelDetail(data)
       }
-      
     }) 
   },[]);
 
-  const tags=[model.cateGory1]
+  let tags=[model.cateGory1]
 
   if(model.cateGory2){
     Array.from(model.cateGory2.split(','),t=>t&&tags.push(t))
   }
 
+  if(model.modelSubName){
+    tags=[...tags,...model.modelSubName].filter(f=>f)
+  }
+
+  // console.log('tag',tags)
   return (
     <div style={{
       marginTop: '12px'
@@ -137,7 +150,7 @@ function ModelDetail() {
               </Descriptions.Item>
           
               <Descriptions.Item label="downLoadLink" span={3}>
-               {modelDetail&&modelDetail.downLoadLink}
+               {modelDetail&&modelDetail.modelFileLinks}
               </Descriptions.Item>
           
               {/* <Descriptions.Item label="Social" span={3}>
