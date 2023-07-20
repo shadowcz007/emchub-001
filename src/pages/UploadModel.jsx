@@ -400,11 +400,10 @@ const uploadProps ={
               <Form.Item
                 label="Category"
                 required
-                name="cateGory1" 
+                name="category1" 
                 // tooltip={{ title: 'Tooltip with customize icon', icon: <InfoCircleOutlined /> }}
               >
                 <Select
-                   
                   size={'large'}
                   placeholder="Please select"
                   // defaultValue={categoryOptions.length==1?categoryOptions[0].value:[]}
@@ -455,60 +454,63 @@ const uploadProps ={
 
             {
               currentStep===2?<>
-<p>Images</p>
-<Upload
-      {...uploadPropsForImage}
- 
-    >
-      <Button icon={<UploadOutlined />}
-      style={{ marginBottom:24 }}
-      >Select Images</Button>
-    </Upload>
- 
-    <Button
-        type="primary"
-        onClick={()=>handleUpload('images')}
-        disabled={fileListForImage.length === 0}
-        loading={uploadingForImage}
-        style={{ marginBottom: 32 }}
-      >
-        {uploadingForImage ? 'Uploading' : 'Start Upload'}
-      </Button>
+                <p>Images</p>
+                <Upload
+              {...uploadPropsForImage}
+        
+            >
+              <Button icon={<UploadOutlined />}
+              style={{ marginBottom:24 }}
+              >Select Images</Button>
+                </Upload>
+        
+                <Button
+                type="primary"
+                onClick={()=>handleUpload('images')}
+                disabled={fileListForImage.length === 0}
+                loading={uploadingForImage}
+                style={{ marginBottom: 32 }}
+              >
+                {uploadingForImage ? 'Uploading' : 'Start Upload'}
+              </Button>
 
-      <div style={{
-        display:'flex',
-        flexWrap:'wrap',
-        marginBottom:56
-      }}>
-      {
-        Array.from(fileUrlsForImage,url=><Image src={url} width={72}/>)
-      }
-      </div>
+              <div style={{
+                display:'flex',
+                flexWrap:'wrap',
+                marginBottom:56
+              }}>
+              {
+                Array.from(fileUrlsForImage,url=><Image src={url} width={72}/>)
+              }
+              </div>
 
 
-     <Paragraph copyable={{ tooltips: false,text:modelId }}>Model Id : {modelId}</Paragraph>
+             <Paragraph copyable={{ tooltips: false,text:modelId }}>Model Id : {modelId}</Paragraph>
              
 
              <p>Model File (ckpt pt safetenors bin zip)</p>
 
               <Upload {...uploadProps}>
-        <Button icon={<UploadOutlined />}>Select File</Button>
-      </Upload>
+                <Button icon={<UploadOutlined />}>Select File</Button>
+              </Upload>
 
-      <Button
-        type="primary"
-        onClick={()=>handleUpload('model')}
-        disabled={fileList.length === 0}
-        loading={uploading}
-        style={{ marginTop: 16 }}
-      >
-        {uploading ? 'Uploading' : 'Start Upload'}
-      </Button>
-      <br></br>
+              <Button
+                type="primary"
+                onClick={()=>handleUpload('model')}
+                disabled={fileList.length === 0}
+                loading={uploading}
+                style={{ marginTop: 16 }}
+              >
+                {uploading ? 'Uploading' : 'Start Upload'}
+              </Button>
+              <br></br>
       
       {fileUrls[0]&&<a href={fileUrls[0]}>Model link</a>}
       <hr></hr>
-      <Button type="primary" htmlType="submit" onClick={onFinish}>NEXT</Button>
+      <Button type="primary" htmlType="submit" onClick={onFinish}
+      disabled={!(fileUrls[0]&&fileUrlsForImage[0])}
+      
+      >NEXT</Button>
             
             </>:''
             }

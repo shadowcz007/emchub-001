@@ -36,7 +36,9 @@ const queryModelDetailInfo = async (custId,modelId) => {
       modelFileHashCodes,
       modelId,
       version,
-      modelFileNames
+      modelFileNames,
+      negativePrompt,
+      positivePromts
     }=data.bussData;
     // console.log(modelDetail,modelInfo)
     return {
@@ -47,7 +49,9 @@ const queryModelDetailInfo = async (custId,modelId) => {
     modelFileHashCodes,
     modelId,
     version:version||1,
-    modelFileNames
+    modelFileNames,
+    negativePrompt,
+    positivePromts
   }
   }
 }
@@ -72,7 +76,7 @@ function ModelDetail() {
     }) 
   },[]);
 
-  let tags=[model.cateGory1]
+  let tags=[model.category1]
 
   if(model.cateGory2){
     Array.from(model.cateGory2.split(','),t=>t&&tags.push(t))
@@ -177,14 +181,19 @@ function ModelDetail() {
               {" "}{modelDetail&&modelDetail.commonParams}{" "}
             </p>
 
+{modelDetail&&modelDetail.positivePromts?<>
+  <p>Positive Promts:</p>
             <p>
               {modelDetail&&modelDetail.positivePromts}
-            </p>
-            <p>
-              {modelDetail&&modelDetail.negativePromts}
-            </p>
-            
-            
+            </p></>:''}
+         
+         {
+          modelDetail&&modelDetail.negativePromts?<> <p>Negative Promts:</p>
+          <p>
+            {modelDetail&&modelDetail.negativePromts}
+          </p></>:''
+         }
+              
           </Card>
         </Col>
         {/* <Col span={24} md={8} className="mb-24">

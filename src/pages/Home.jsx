@@ -189,8 +189,6 @@ function Home() {
                 </div>
               </div>
 
-             
-
               <div className="emc-hub-models">
                 {
                   Array.from(modelData,model=>{
@@ -199,7 +197,6 @@ function Home() {
                    </Link>
                   })
                 }
-               
               </div>
   
             </Card>

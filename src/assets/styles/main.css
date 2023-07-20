@@ -2749,11 +2749,6 @@ section.ant-layout.ant-layout-has-sider.layout-dashboard.layout-profile .btn-sig
     margin-bottom: 0;
 }
 
-.card-project.ant-card {
-    box-shadow: none;
-    border: none;
-}
-
 .card-project.ant-card .ant-card-cover img {
     border-radius: 8px;
     box-shadow: 0 4px 6px rgb(0 0 0 / 12%);
