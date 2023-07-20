@@ -56,10 +56,10 @@ const getByPage = async () => {
         'Content-Type': 'application/json'
       }
     })
-  if(data&&data.resultCode=='SUCCESS'&&data.bussData){
-    const modelList=JSON.parse(data.bussData.modelList)
-    // console.log(modelList)
-    return modelList
+  if(data&&data.resultCode=='SUCCESS'&&data.modelInfoList){
+    const modelList=data.modelInfoList;
+    console.log(JSON.stringify(modelList));
+    return modelList;
   }
 }
 
