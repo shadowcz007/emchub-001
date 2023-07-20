@@ -318,7 +318,7 @@ const uploadProps ={
         let info=values.modelDetailInfo?JSON.parse(values.modelDetailInfo):{}
         const res={
           "custId":custId,
-          "busssData":{
+          "bussData":{
             ...info,
             version:v,
             modelId,
