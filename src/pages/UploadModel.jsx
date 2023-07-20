@@ -6,16 +6,19 @@ import {
   message,
   Button,
   Select,
-  Input,
-  Steps , Form, Typography ,Upload ,InputNumber 
+  Input,Image,
+  Steps , Form, Typography ,Upload ,InputNumber ,Result
 } from "antd";
 
+import {  Link } from "react-router-dom";
+
 import axios from 'axios';
-import { LoadingOutlined, SmileOutlined, SolutionOutlined, UserOutlined,FileTextOutlined,UploadOutlined  } from "@ant-design/icons";
+import { LoadingOutlined, SmileOutlined, SolutionOutlined, UserOutlined,FileTextOutlined,UploadOutlined,PlusOutlined   } from "@ant-design/icons";
  
 const { Paragraph } = Typography;
 
 const { TextArea } = Input;
+
 
 const tagOptions=Array.from(`PERSON,WEDDING,WOMEN,PHOTOREALISTIC,HIGHLY DETAILED`.split(","),t=>{
   return {
@@ -32,6 +35,15 @@ const categoryOptions=Array.from(`CHECKPOINT`.split(","),t=>{
   }
 })
 
+const getBase64 = (file )  =>
+  new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result );
+    reader.onerror = (error) => reject(error);
+  });
+
+
 
 const step1=[
   {
@@ -40,14 +52,13 @@ const step1=[
     icon: <LoadingOutlined />,
   },
   {
-    title: 'EDIT DETAIL',
-    status: 'wait',
-    icon: <SolutionOutlined />,
-  },
-  {
     title: 'UPLOAD',
     status: 'wait',
     icon: <UserOutlined />,
+  }, {
+    title: 'EDIT DETAIL',
+    status: 'wait',
+    icon: <SolutionOutlined />,
   },
   {
     title: 'PUBLISH',
@@ -63,14 +74,14 @@ const step2=[
     icon:<FileTextOutlined/> ,
   },
   {
-    title: 'EDIT DETAIL',
-    status: 'process',
-    icon: <LoadingOutlined />,
-  },
-  {
     title: 'UPLOAD',
     status: 'wait',
-    icon: <UserOutlined />,
+    icon:<LoadingOutlined />,
+  },
+  {
+    title: 'EDIT DETAIL',
+    status: 'process',
+    icon: <SolutionOutlined />,
   },
   {
     title: 'PUBLISH',
@@ -88,14 +99,38 @@ const step3=[
     icon:<FileTextOutlined/> ,
   },
   {
+    title: 'UPLOAD',
+    status: 'process',
+    icon: <UserOutlined />,
+  },
+  {
     title: 'EDIT DETAIL',
     status: 'finish',
-    icon: <SolutionOutlined />,
+    icon: <LoadingOutlined />,
+  },
+  {
+    title: 'PUBLISH',
+    status: 'wait',
+    icon: <SmileOutlined />,
+  },
+]
+
+
+const step4=[
+  {
+    title: 'EDIT INFO',
+    status: 'finish',
+    icon:<FileTextOutlined/> ,
   },
   {
     title: 'UPLOAD',
     status: 'process',
-    icon: <LoadingOutlined />,
+    icon: <UserOutlined />,
+  },
+  {
+    title: 'EDIT DETAIL',
+    status: 'finish',
+    icon: <SolutionOutlined />,
   },
   {
     title: 'PUBLISH',
@@ -157,9 +192,29 @@ function UploadModel() {
   const [version,setVersion]=useState(1);
 
 
+  const [fileListForImage, setFileListForImage] = useState([]);
+  const [uploadingForImage, setUploadingForImage] = useState(false);
+
   const [fileList, setFileList] = useState([]);
   const [uploading, setUploading] = useState(false);
+
+  const [fileUrlsForImage,setFileUrlsForImage]=useState([])
+  const [fileUrls,setFileUrls]=useState([])
  
+const uploadPropsForImage ={
+  onRemove: (file) => {
+    const index = fileListForImage.indexOf(file);
+    const newFileList = fileListForImage.slice();
+    newFileList.splice(index, 1);
+    setFileListForImage(newFileList);
+  },
+  beforeUpload: (file) => {
+    setFileListForImage([...fileListForImage, file])
+    return false;
+  },
+  fileList:fileListForImage,
+};
+
 const uploadProps ={
   onRemove: (file) => {
     const index = fileList.indexOf(file);
@@ -169,36 +224,61 @@ const uploadProps ={
   },
   beforeUpload: (file) => {
     setFileList([...fileList, file]);
-
     return false;
   },
   fileList,
 };
 
-  const handleUpload = () => {
+  const handleUpload = (type) => {
+    
     const formData = new FormData();
-    fileList.forEach((file) => {
-      formData.append('files[]', file);
-    });
-    setUploading(true);
+    if(type=='images'){
+      fileListForImage.forEach((file) => {
+        formData.append('file', file);
+      });
+      setUploadingForImage(true);
+    }else{
+      fileList.forEach((file) => {
+        formData.append('file', file);
+      });
+      setUploading(true);
+    }
+    
     // You can use any AJAX library you like
-    fetch(baseURL + '/modelUpload.do', {
+    fetch(baseURL + '/fileUpload.do', {
       method: 'POST',
       body: formData,
     })
       .then((res) => res.json())
-      .then(() => {
-        setFileList([]);
-        message.success('upload successfully.');
+      .then((res) => {
+        if(res.resultCode=='SUCCESS'&&res.bussData&&res.bussData.file_link){
+          const urls=res.bussData.file_link.split(',')
+          console.log(type,fileUrlsForImage,fileListForImage)
+          if(type=='images'){
+            setFileListForImage([]);
+            setFileUrlsForImage( [...fileUrlsForImage,...urls])
+          }else{
+            setFileList([]);
+            setFileUrls( [...fileUrls,...urls])
+          }
+          message.success('upload successfully.');
+        }
+        
       })
       .catch(() => {
         message.error('upload failed.');
       })
       .finally(() => {
-        setUploading(false);
+        if(type=='images'){
+          setUploadingForImage(false);
+        }else{
+          setUploading(false);
+        }
       });
   };
 
+
+ 
 
   const onFinish = (values) => {
     
@@ -227,32 +307,36 @@ const uploadProps ={
     }
 
     if(currentStep==2){
-      // console.log(values)
-      const version=values.version||version;
-      const res={
-        "custId":custId,
-        "busssData":{
-          ...JSON.parse(values.modelDetailInfo),
-          version,
-          modelId
-        }}
-     
-
-      modModelDetailInfo(res).then(d=>{
-        if(d){
-          setSteps(step3);
-          setCurrentStep(3);
-          setVersion(version)
-        }else{
-          setModelId('')
-        }
-      })
-
-      console.log(JSON.stringify(res,null,2))
-
-     
+      // console.log(fileUrlsForImage,fileUrls)
+      setSteps(step3)
+      setCurrentStep(3)
     }
     
+    if(currentStep==3){
+        // console.log(values)
+        const v=values.version||version;
+        let info=values.modelDetailInfo?JSON.parse(values.modelDetailInfo):{}
+        const res={
+          "custId":custId,
+          "busssData":{
+            ...info,
+            version:v,
+            modelId,
+            modelFileLinks:fileUrls[0],
+            sampleImgFileLinks:fileUrlsForImage.join(',')
+          }}
+
+        modModelDetailInfo(res).then(d=>{
+          if(d){
+            setSteps(step4);
+            setCurrentStep(4);
+          }else{
+            setModelId('')
+          }
+        })
+
+        console.log(JSON.stringify(res,null,2))
+    }
 
   };
 
@@ -264,12 +348,12 @@ const uploadProps ={
       
 
         {/* 上传步骤 */}
-        <Col xs={24} md={16}>
+        <Col xs={24} md={24}>
 
         <Card >
         <Steps
-    items={steps}
-  /></Card>
+              items={steps}
+        /></Card>
 
           <Row gutter={[24, 0]}>
             <Col span={24} md={24} className="mb-24">
@@ -282,15 +366,13 @@ const uploadProps ={
               //   <span>VIEW ALL</span>
               // </Button>,
             ]}
-          >
-            
+          >     
             
             {
               currentStep===1?<Form
               form={form}
               layout="vertical"
               onFinish={onFinish}
-              
             >
              
               <Form.Item label="Model Name"  name="modelName" 
@@ -310,7 +392,6 @@ const uploadProps ={
                   size={'large'}
                   placeholder="Please select"
                   defaultValue={[]}
-                
                   style={{ width: '100%' }}
                   options={tagOptions}
                 />
@@ -372,9 +453,69 @@ const uploadProps ={
             </Form>:''
             }
 
+            {
+              currentStep===2?<>
+<p>Images</p>
+<Upload
+      {...uploadPropsForImage}
+ 
+    >
+      <Button icon={<UploadOutlined />}
+      style={{ marginBottom:24 }}
+      >Select Images</Button>
+    </Upload>
+ 
+    <Button
+        type="primary"
+        onClick={()=>handleUpload('images')}
+        disabled={fileListForImage.length === 0}
+        loading={uploadingForImage}
+        style={{ marginBottom: 32 }}
+      >
+        {uploadingForImage ? 'Uploading' : 'Start Upload'}
+      </Button>
 
-   
-{currentStep===2?<Form
+      <div style={{
+        display:'flex',
+        flexWrap:'wrap',
+        marginBottom:56
+      }}>
+      {
+        Array.from(fileUrlsForImage,url=><Image src={url} width={72}/>)
+      }
+      </div>
+
+
+     <Paragraph copyable={{ tooltips: false,text:modelId }}>Model Id : {modelId}</Paragraph>
+             
+
+             <p>Model File (ckpt pt safetenors bin zip)</p>
+
+              <Upload {...uploadProps}>
+        <Button icon={<UploadOutlined />}>Select File</Button>
+      </Upload>
+
+      <Button
+        type="primary"
+        onClick={()=>handleUpload('model')}
+        disabled={fileList.length === 0}
+        loading={uploading}
+        style={{ marginTop: 16 }}
+      >
+        {uploading ? 'Uploading' : 'Start Upload'}
+      </Button>
+      <br></br>
+      
+      {fileUrls[0]&&<a href={fileUrls[0]}>Model link</a>}
+      <hr></hr>
+      <Button type="primary" htmlType="submit" onClick={onFinish}>NEXT</Button>
+            
+            </>:''
+            }
+
+
+             
+{currentStep===3?<Form
               form={form}
               layout="vertical"
               onFinish={onFinish}
@@ -406,9 +547,7 @@ const uploadProps ={
                 "negativePrompt":"", 
                 "enhancePromt":"", 
                 "numInferenceSteps":"",
-                "seed":-1, 
-                "modelFileLink": "", 
-                "sampleImgFileLink":"" 
+                "seed":-1
               },null,2) }}>Copy Template</Paragraph>
 
               </div>
@@ -431,8 +570,7 @@ const uploadProps ={
                     "enhancePromt":"", 
                     "numInferenceSteps":"",
                     "seed":-1, 
-                    "modelFileLink": "", 
-                    "sampleImgFileLink":"" 
+                   
                   },null,2)}
                   maxLength={1200} 
                   showCount={true}
@@ -447,31 +585,30 @@ const uploadProps ={
             }
 
 
-            {
-              currentStep===3?<>
-               <Paragraph copyable={{ tooltips: false,text:modelId }}>Model Id : {modelId}</Paragraph>
-              <Paragraph  style={{marginBottom:24}}>Version : {version}</Paragraph>
-              <Upload {...uploadProps}>
-        <Button icon={<UploadOutlined />}>Select File</Button>
-      </Upload>
-      <Button
-        type="primary"
-        onClick={handleUpload}
-        disabled={fileList.length === 0}
-        loading={uploading}
-        style={{ marginTop: 16 }}
-      >
-        {uploading ? 'Uploading' : 'Start Upload'}
+{
+  currentStep==4?<>
+   <Result
+    status="success"
+    title="Successfully Publish the Model!"
+    subTitle={modelId}
+    extra={[
+      <Link to={`/modelDetail?modelId=${modelId}`}>
+      <Button type="primary" key="console">
+        View
       </Button>
-            
-            </>:''
-            }
-
+      </Link>,
+     
+    ]}
+  />
+   </>:''
+}
             
           </Card>
         </Col>
-
+     
           </Row>
+
+          
         </Col>
       
       </Row>

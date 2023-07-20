@@ -5,31 +5,19 @@ import {
   Col,
   Row,
   Typography,
-  Tooltip,
-  Progress,
-  Upload,
   message,
   Button,
-  Tag,
-  Space,
-  Radio,FloatButton 
+  FloatButton 
 } from "antd";
 import {
-  ToTopOutlined,
-  MenuUnfoldOutlined,
+  ToTopOutlined, 
   RightOutlined,
 } from "@ant-design/icons";
 import Paragraph from "antd/lib/typography/Paragraph";
 
- 
-
 import ModelCard from "../components/ModelCard"
-
  
 import card from "../assets/images/00047-212406482.png";
-
-
-// import modelsAPI from '../api/models'
 
 import axios from 'axios';
 const baseURL = process.env.REACT_APP_BASE_URL
