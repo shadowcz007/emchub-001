@@ -40,13 +40,13 @@ const queryModelDetailInfo = async (custId,modelId) => {
     }=data.bussData;
     // console.log(modelDetail,modelInfo)
     return {
-      modelSubName:modelSubName.split(",").filter(f=>f),
+    modelSubName:modelSubName?modelSubName.split(",").filter(f=>f):[],
     modelName,
     modelFileLinks,
-    sampleImgFileLinks:sampleImgFileLinks.split(",").filter(f=>f),
+    sampleImgFileLinks:sampleImgFileLinks?sampleImgFileLinks.split(",").filter(f=>f):[],
     modelFileHashCodes,
     modelId,
-    version,
+    version:version||1,
     modelFileNames
   }
   }

@@ -48,25 +48,33 @@ function Home() {
 
   const { Title, Text } = Typography;
 
-  const onChange = (e) => console.log(`radio checked:${e.target.value}`);
-
   const [modelData,setModelData]=useState([]);
   const [totalNum,setTotalNum]=useState(0);
 
   useEffect(() => {
     getByPage(custId,0,80).then(data=>{
       if(data){
-        const {totalNum:n,modelInfoList}=data;
+        let {totalNum:n,modelInfoList}=data;
         n&&setTotalNum(n)
-        modelInfoList&& setModelData(modelInfoList)
+        if(modelInfoList){
+          // console.log(modelInfoList)
+          modelInfoList= Array.from(modelInfoList,model=>{
+            if(model.sampleImgFileLinks){
+              model.sampleImgFileLinks=model.sampleImgFileLinks.split(',').filter(f=>f)
+            }
+            return model
+          })
+          
+          // console.log(modelInfoList.sampleImgFileLinks)
+          setModelData(modelInfoList)
+        }
       }
-     
     })
     // console.log('执行了')
   },[]);
 
   
-  console.log(Array.from(modelData,m=>m.modelCover1))
+  // console.log(modelData)
   return (
     <>
       <div className="layout-content">

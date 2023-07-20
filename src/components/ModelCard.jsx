@@ -33,8 +33,10 @@ import {
   
 
 const card=(model,width=240)=>{
+  // console.log(model)
   model=model||{}
   let imgs=model.sampleImgFileLinks||[];
+  if(imgs.length==0)imgs=[defaultCard]
   
   let cateGory1=model.cateGory1,
    cateGory2=model.cateGory2||[];
@@ -52,7 +54,7 @@ const card=(model,width=240)=>{
       {
         Array.from(imgs,img=>{
         return <div>
-          <img alt={modelName||''} 
+          <img alt={modelName||'-'} 
               src={img||defaultCard} />
         </div>
         })
@@ -65,7 +67,7 @@ const card=(model,width=240)=>{
     style={{width:120,marginBottom:12}}
     color={'orange'}
     ><EllipsisMiddle suffixCount={12}>
-{modelName||''}
+{modelName||'-'}
 </EllipsisMiddle></Tag>
         </Tooltip>
 
