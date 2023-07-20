@@ -14,34 +14,14 @@ import {
   message,
 } from "antd";
 
-import {
-  FacebookOutlined,
-  TwitterOutlined,
-  InstagramOutlined,
-  VerticalAlignTopOutlined,
-} from "@ant-design/icons";
-
 import ModelCard from "../components/ModelCard"
-
-import BgProfile from "../assets/images/bg-profile.jpg";
-import profilavatar from "../assets/images/face-1.jpg";
-import convesionImg from "../assets/images/face-3.jpg";
-import convesionImg2 from "../assets/images/face-4.jpg";
-import convesionImg3 from "../assets/images/face-5.jpeg";
-import convesionImg4 from "../assets/images/face-6.jpeg";
-import convesionImg5 from "../assets/images/face-2.jpg";
-import project1 from "../assets/images/home-decor-1.jpeg";
-import project2 from "../assets/images/home-decor-2.jpeg";
-import project3 from "../assets/images/home-decor-3.jpeg";
-
-
 
 import axios from 'axios';
 const baseURL = process.env.REACT_APP_BASE_URL
 
-const queryModelDetailInfo = async (modelId) => {
+const queryModelDetailInfo = async (custId,modelId) => {
   const { data } = await axios.post(baseURL + '/queryModelDetailInfo.do',
-  {"custId":"PUBLIC","bussData":{"model_id":modelId}},
+  {custId,bussData:{"modelId":modelId}},
     {
       headers: {
         'Content-Type': 'application/json'
@@ -64,14 +44,14 @@ const queryModelDetailInfo = async (modelId) => {
 
 
 function ModelDetail() {
-  
+  const custId=localStorage.getItem('_emc_hub_custId')||'';
   const [, setLoading] = useState(false);
   const [model,setModel]=useState({})
   const [modelDetail,setModelDetail]=useState({})
 
   useEffect(() => {
    const modelId= window.location.search.replace('?modelId=','')
-    queryModelDetailInfo(modelId).then(data=>{
+    queryModelDetailInfo(custId,modelId).then(data=>{
       console.log(data)
       if(data){
         const {modelInfo,modelDetail}=data;

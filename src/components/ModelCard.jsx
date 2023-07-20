@@ -35,7 +35,16 @@ import {
 const card=(model,width=240)=>{
 
   let img;
-                   if(model.modelCover&&model.modelCover.coverImgList ){
+  
+  // if(model.modelCover1!=null&&model.modelCover1!='null'&&model.modelCover1){
+  //   // 
+  //   if(typeof(model.modelCover1)=='string'){
+  //     let imgs=JSON.parse(model.modelCover1)
+  //     console.log(imgs)
+  //   }
+  // }
+
+  if(model.modelCover&&model.modelCover.coverImgList ){
                     let modelCover= model.modelCover
                     img=modelCover.coverImgList[0];
                     

@@ -1,5 +1,5 @@
-import { Routes, Route, Outlet, Link } from "react-router-dom";
-
+import { Routes, Route, Outlet, Link,useNavigate } from "react-router-dom";
+import  { useState } from "react";
 
 import Home from './pages/Home'
 import ModelDetail from './pages/ModelDetail'
@@ -13,6 +13,10 @@ import BgProfile from "./assets/images/bg-profile.jpg";
 import GENLOGO from "./assets/images/00036-212406480.png"
 
 export default function App() {
+
+  const nav=useNavigate();
+  const [custId,setCustId]=useState(localStorage.getItem('_emc_hub_custId')||'')
+
   return (
     <div>
       
@@ -28,11 +32,25 @@ export default function App() {
             parent route paths, and nested route elements render inside
             parent route elements. See the note about <Outlet> below. */}
       <Routes>
-        <Route path="/" element={<Layout />}>
+        <Route path="/" Component={(props) => <Layout {...props} custId={custId}/>}>
           <Route index element={<Home />} />
-          <Route path="login" element={<Login />} />
+          <Route path="login" Component={(props) => <Login {...props} 
+
+          custId={custId} 
+
+          nav={(path,custId)=>{
+            nav(path);
+            setCustId(custId)
+          }}/>} 
+
+          // updateCustId={(custId)=>setCustId(custId)}
+          
+          />
           <Route path="uploadModel" element={<UploadModel />} />
-          <Route path="signUp" element={<SignUp />} />
+          <Route path="signUp" Component={(props) => <SignUp {...props} nav={(path,custId)=>{
+            nav(path);
+            setCustId(custId)
+          }}/>} />
           <Route path="modelDetail" element={<ModelDetail />} />
           
           {/* 
@@ -45,7 +63,8 @@ export default function App() {
 
 
 
-function Layout() {
+function Layout(props) {
+  console.log('layout',props)
   return (
     <div >
       <nav className="emc-hub-nav" style={{ backgroundImage: "url(" + BgProfile + ")" }}>
@@ -57,7 +76,7 @@ function Layout() {
             <Link to="/uploadModel">Upload Model</Link>
           </li> */}
           <li>
-            <Link to="/login">Login</Link>
+            <Link to="/login" >{!props.custId?'Login':'Logout'}</Link>
           </li>
           
           {/* <li>

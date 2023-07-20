@@ -7,13 +7,13 @@ import {
   Button,
   Select,
   Input,
-  Steps , Form, Checkbox,Upload 
+  Steps , Form, Typography ,Upload ,InputNumber 
 } from "antd";
 
-import { nanoid } from 'nanoid/non-secure';
-
+import axios from 'axios';
 import { LoadingOutlined, SmileOutlined, SolutionOutlined, UserOutlined,FileTextOutlined,UploadOutlined  } from "@ant-design/icons";
  
+const { Paragraph } = Typography;
 
 const { TextArea } = Input;
 
@@ -24,7 +24,8 @@ const tagOptions=Array.from(`PERSON,WEDDING,WOMEN,PHOTOREALISTIC,HIGHLY DETAILED
   }
 })
 
-const categoryOptions=Array.from(`CHECKPOINT,LORA,CONTROLNET,OTHER`.split(","),t=>{
+//CHECKPOINT,LORA,CONTROLNET,OTHER
+const categoryOptions=Array.from(`CHECKPOINT`.split(","),t=>{
   return {
     value:t,
     label:t
@@ -104,72 +105,152 @@ const step3=[
 ]
 
 
-// 上传接口
 
-const uploadProps = {
-  name: 'file',
-  action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76',
-  headers: {
-    authorization: 'authorization-text',
-  },
-  onChange(info) {
-    if (info.file.status !== 'uploading') {
-      console.log(info.file, info.fileList);
-    }
-    if (info.file.status === 'done') {
-      message.success(`${info.file.name} file uploaded successfully`);
-    } else if (info.file.status === 'error') {
-      message.error(`${info.file.name} file upload failed.`);
-    }
-  },
-  progress: {
-    strokeColor: {
-      '0%': '#108ee9',
-      '100%': '#87d068',
-    },
-    strokeWidth: 3,
-    format: (percent) => percent && `${parseFloat(percent.toFixed(2))}%`,
-  },
-};
+const baseURL = process.env.REACT_APP_BASE_URL
 
+const addNewModel = async (json) => {
+  const { data } = await axios.post(baseURL + '/addNewModel.do',
+  json,
+    {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+  if(data&&data.resultCode=='SUCCESS'&&data.loginStatus=="true"&&data.bussData&&data.bussData.modelId){
+    const modelId=data.bussData.modelId;
+    return modelId
+  }else{
+    // 失败
+    
+  }
+}
 
-
+const modModelDetailInfo = async (json) => {
+  const { data } = await axios.post(baseURL + '/modModelDetailInfo.do',
+  json,
+    {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+  if(data&&data.resultCode=='SUCCESS'&&data.loginStatus=="true"){
+    return true
+  }else{
+    // 失败
+    return false
+  }
+}
+ 
 
 function UploadModel() {
+
+  const custId=localStorage.getItem('_emc_hub_custId')||'';
+
   const [form] = Form.useForm();
 
   const [currentStep,setCurrentStep]=useState(1)
  
   const [steps,setSteps]=useState(step1)
 
+  const [modelId,setModelId]=useState('');
+
+  const [version,setVersion]=useState(1);
+
+
+  const [fileList, setFileList] = useState([]);
+  const [uploading, setUploading] = useState(false);
+ 
+const uploadProps ={
+  onRemove: (file) => {
+    const index = fileList.indexOf(file);
+    const newFileList = fileList.slice();
+    newFileList.splice(index, 1);
+    setFileList(newFileList);
+  },
+  beforeUpload: (file) => {
+    setFileList([...fileList, file]);
+
+    return false;
+  },
+  fileList,
+};
+
+  const handleUpload = () => {
+    const formData = new FormData();
+    fileList.forEach((file) => {
+      formData.append('files[]', file);
+    });
+    setUploading(true);
+    // You can use any AJAX library you like
+    fetch(baseURL + '/modelUpload.do', {
+      method: 'POST',
+      body: formData,
+    })
+      .then((res) => res.json())
+      .then(() => {
+        setFileList([]);
+        message.success('upload successfully.');
+      })
+      .catch(() => {
+        message.error('upload failed.');
+      })
+      .finally(() => {
+        setUploading(false);
+      });
+  };
+
+
   const onFinish = (values) => {
     
     if(currentStep==1){
 
+      let modelSubName=values.modelSubName;
+
       const res= {
-        "custId": nanoid(),
-        "bussData":JSON.stringify(values,null,2)
+        "custId":custId,
+        "bussData":{...values,modelSubName:modelSubName.join(",")}
       }
   
       console.log(JSON.stringify(res,null,2))
 
+      addNewModel(res).then(id=>{
+        if(id){
+          setSteps(step2)
+          setCurrentStep(2)
+          setModelId(id)
+        }else{
+          message.error('addNewModel Fail')
+          setModelId('')
+        }
+      })
 
-      setSteps(step2)
-      setCurrentStep(2)
     }
 
     if(currentStep==2){
+      // console.log(values)
+      const version=values.version||version;
       const res={
-        "custId":"",
-        "bussData":{modelDetail:{
-          ...values
-
+        "custId":custId,
+        "busssData":{
+          ...JSON.parse(values.modelDetailInfo),
+          version,
+          modelId
         }}
-      }
+     
+
+      modModelDetailInfo(res).then(d=>{
+        if(d){
+          setSteps(step3);
+          setCurrentStep(3);
+          setVersion(version)
+        }else{
+          setModelId('')
+        }
+      })
+
       console.log(JSON.stringify(res,null,2))
 
-      setSteps(step3);
-      setCurrentStep(3)
+     
     }
     
 
@@ -209,6 +290,7 @@ function UploadModel() {
               form={form}
               layout="vertical"
               onFinish={onFinish}
+              
             >
              
               <Form.Item label="Model Name"  name="modelName" 
@@ -244,15 +326,14 @@ function UploadModel() {
                    
                   size={'large'}
                   placeholder="Please select"
-                  defaultValue={[]}
-               
+                  // defaultValue={categoryOptions.length==1?categoryOptions[0].value:[]}
                   style={{ width: '100%' }}
                   options={categoryOptions}
                 />
               </Form.Item>
         
         
-              <Form.Item
+              {/* <Form.Item
                 label="Model Describe"
                 name="modelDescribe" 
                 // required
@@ -265,9 +346,9 @@ function UploadModel() {
                   placeholder="xxx" 
                   maxLength={160} 
                   showCount={true} />
-              </Form.Item>
+              </Form.Item> */}
         
-              <Form.Item
+              {/* <Form.Item
                 label="How to use"
                 name="ModelUse" 
                 // required
@@ -282,7 +363,7 @@ function UploadModel() {
                ]}
            
             />
-              </Form.Item>
+              </Form.Item> */}
         
               <Form.Item>
                 <Button type="primary" htmlType="submit">NEXT</Button>
@@ -298,24 +379,64 @@ function UploadModel() {
               layout="vertical"
               onFinish={onFinish}
             >
+
+              <Paragraph copyable={{ tooltips: false,text:modelId }}
+              style={{marginBottom:24}}
+              >Model ID : {modelId}</Paragraph>
              
-              <Form.Item label="Model Version"  name="version" 
+              <Form.Item label="Model Version"  
+              name="version" 
               required 
               // tooltip="This is a required field"
               >
-                <Input placeholder="input placeholder" />
+                <InputNumber placeholder="1" defaultValue={version} min={1} max={999}/>
               </Form.Item>
-              <Form.Item label="Detail Description"  name="modelDesc" 
-              required 
-              // tooltip="This is a required field"
+
+
+              <div style={{display:'flex',alignItems: 'center'}}>
+              <p> Detail Description  </p>
+              <Paragraph 
+              style={{margin:0,paddingLeft:48}}
+              copyable={{ tooltips: false,text:JSON.stringify({
+                "guideLink":"", 
+                "paramsGuideLink":"", 
+                "sampleCodeLink":"", 
+                "invokeGuide":"", 
+                "positivePromts":"", 
+                "negativePrompt":"", 
+                "enhancePromt":"", 
+                "numInferenceSteps":"",
+                "seed":-1, 
+                "modelFileLink": "", 
+                "sampleImgFileLink":"" 
+              },null,2) }}>Copy Template</Paragraph>
+
+              </div>
+              
+             
+              <Form.Item 
+              name="modelDetailInfo" 
+              required
               >
                  <TextArea 
                   allowClear
-            
-                  autoSize={{ minRows: 4, maxRows: 6 }} 
-                  placeholder="xxx" 
-                  maxLength={160} 
-                  showCount={true} />
+                  autoSize={{ minRows: 8, maxRows: 28 }} 
+                  placeholder={JSON.stringify({
+                    "guideLink":"", 
+                    "paramsGuideLink":"", 
+                    "sampleCodeLink":"", 
+                    "invokeGuide":"", 
+                    "positivePromts":"", 
+                    "negativePrompt":"", 
+                    "enhancePromt":"", 
+                    "numInferenceSteps":"",
+                    "seed":-1, 
+                    "modelFileLink": "", 
+                    "sampleImgFileLink":"" 
+                  },null,2)}
+                  maxLength={1200} 
+                  showCount={true}
+                  />
               </Form.Item>
         
               <Form.Item>
@@ -327,9 +448,23 @@ function UploadModel() {
 
 
             {
-              currentStep===3?<Upload {...uploadProps}>
-              <Button icon={<UploadOutlined />}>Click to Upload</Button>
-            </Upload>:''
+              currentStep===3?<>
+               <Paragraph copyable={{ tooltips: false,text:modelId }}>Model Id : {modelId}</Paragraph>
+              <Paragraph  style={{marginBottom:24}}>Version : {version}</Paragraph>
+              <Upload {...uploadProps}>
+        <Button icon={<UploadOutlined />}>Select File</Button>
+      </Upload>
+      <Button
+        type="primary"
+        onClick={handleUpload}
+        disabled={fileList.length === 0}
+        loading={uploading}
+        style={{ marginTop: 16 }}
+      >
+        {uploading ? 'Uploading' : 'Start Upload'}
+      </Button>
+            
+            </>:''
             }
 
             
