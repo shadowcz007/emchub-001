@@ -31,6 +31,7 @@ const queryModelDetailInfo = async (custId,modelId) => {
     let { 
       modelName,
       modelFileLinks,
+      sampleImgFileLinks,
       modelSubName,
       modelFileHashCodes,
       modelId,
@@ -42,6 +43,7 @@ const queryModelDetailInfo = async (custId,modelId) => {
       modelSubName:modelSubName.split(",").filter(f=>f),
     modelName,
     modelFileLinks,
+    sampleImgFileLinks:sampleImgFileLinks.split(",").filter(f=>f),
     modelFileHashCodes,
     modelId,
     version,
@@ -149,9 +151,13 @@ function ModelDetail() {
                {modelDetail&&modelDetail.modelId}
               </Descriptions.Item>
           
+              {modelDetail&&modelDetail.modelFileLinks?
               <Descriptions.Item label="downLoadLink" span={3}>
-               {modelDetail&&modelDetail.modelFileLinks}
-              </Descriptions.Item>
+                <a href={modelDetail.modelFileLinks}>URL</a>
+              </Descriptions.Item>:''
+              }
+
+              
           
               {/* <Descriptions.Item label="Social" span={3}>
                 <a href="#pablo" className="mx-5 px-5">

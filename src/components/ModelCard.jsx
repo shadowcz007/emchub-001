@@ -5,7 +5,7 @@ import {
     Tag,
     Space,
     Tooltip,
-    Avatar,
+    Carousel,
     Radio,
     Switch,
     Upload,
@@ -33,45 +33,31 @@ import {
   
 
 const card=(model,width=240)=>{
-
-  let img;
+  model=model||{}
+  let imgs=model.sampleImgFileLinks||[];
   
-  // if(model.modelCover1!=null&&model.modelCover1!='null'&&model.modelCover1){
-  //   // 
-  //   if(typeof(model.modelCover1)=='string'){
-  //     let imgs=JSON.parse(model.modelCover1)
-  //     console.log(imgs)
-  //   }
-  // }
+  let cateGory1=model.cateGory1,
+   cateGory2=model.cateGory2||[];
 
-  if(model.modelCover&&model.modelCover.coverImgList ){
-                    let modelCover= model.modelCover
-                    img=modelCover.coverImgList[0];
-                    
-                    try {
-                      if(typeof(img)=='string') img=JSON.parse(img)[0]
-                    } catch (error) {
-                      
-                    }
-                    if(img&&img.length>0)img=img[0];
+  if(cateGory2&&typeof(cateGory2)==='string') cateGory2=cateGory2.split(",");
 
-                    if(img&&img.length<3) img=''
-                    
-                   }
-                   let cateGory1=model.cateGory1,
-                   cateGory2=model.cateGory2||[];
-
-                   if(cateGory2&&typeof(cateGory2)==='string') cateGory2=cateGory2.split(",");
-
-                   let modelId=model.modelId,modelName=model.modelName;
+  let modelId=model.modelId,modelName=model.modelName;
 
     return <Card
     hoverable
-   style={{ width,margin:24 }}
+    style={{ width,margin:24 }}
      bordered={true}
      className="card-project"
-     cover={<img alt={modelName||''} 
-     src={img||defaultCard} />}
+     cover={<Carousel autoplay>
+      {
+        Array.from(imgs,img=>{
+        return <div>
+          <img alt={modelName||''} 
+              src={img||defaultCard} />
+        </div>
+        })
+      }
+    </Carousel>}
    >
 
 <Tooltip placement="top" title={modelId}>
