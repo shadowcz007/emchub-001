@@ -7,7 +7,7 @@ import {
   Card,
   Form,
   Input,
-  Checkbox,
+  Checkbox,Spin
 } from "antd";
 
 import { Link  } from "react-router-dom";
@@ -81,6 +81,13 @@ const { Header, Footer, Content } = Layout;
 
 class SignUp extends Component {
 
+  constructor(props){
+    super(props)
+    this.state={
+      loading:false
+    }
+  }
+
   render() {
 
     const onFinish = (values) => {
@@ -92,6 +99,7 @@ class SignUp extends Component {
 
       console.log("applyRegister:", JSON.stringify(values,null,2),authToken);
 
+      this.setState({loading:true})
       applyRegister(res).then(custId=>{
         if(custId){
           //  设置密码
@@ -101,11 +109,13 @@ class SignUp extends Component {
             setTimeout(()=>this.props.nav('/login',custId),1000);
             
             }else{
+              this.setState({loading:false})
               message.error('Register Failed')
             }
           })
             
         }else{
+          this.setState({loading:false})
           message.error('Register Failed')
         }
       })
@@ -117,6 +127,9 @@ class SignUp extends Component {
     };
     return (
       <>
+      {this.state.loading&&<Spin tip="Loading" size="large">
+        <div className="emc-hub-loading" />
+      </Spin>}
         <div className="layout-default ant-layout layout-sign-up">
           <Header>
             <div className="header-col header-brand">

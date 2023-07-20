@@ -8,7 +8,7 @@ import {
   Col,
   Typography,
   Form,
-  Input
+  Input,Spin
 } from "antd";
 import signinbg from "../assets/images/00080-212406488.png";
 import {
@@ -62,6 +62,7 @@ export default class SignIn extends Component {
     this.state={
       custId,
       loginId:localStorage.getItem('_emc_hub_loginId')||'',
+      loading:false
     }
   }
   
@@ -73,6 +74,9 @@ export default class SignIn extends Component {
       const json= { "loginId": values.loginId, "bussData": { "identityType": "PASSWD", "authToken": values.authToken } }
 
       console.log("userLogin:",JSON.stringify(json,null,2));
+
+      this.setState({loading:true})
+      
       userLogin(json).then(custId=>{
         if(custId){
           this.props.nav('/',custId)
@@ -89,6 +93,9 @@ export default class SignIn extends Component {
     };
     return (
       <>
+      {this.state.loading&&<Spin tip="Loading" size="large">
+        <div className="emc-hub-loading" />
+      </Spin>}
         <Layout className="layout-default layout-signin">
           {/* <Header>
             <div className="header-col header-brand">

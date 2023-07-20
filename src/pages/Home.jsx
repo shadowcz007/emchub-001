@@ -21,22 +21,11 @@ import {
 } from "@ant-design/icons";
 import Paragraph from "antd/lib/typography/Paragraph";
 
-import Echart from "../components/chart/EChart";
-import LineChart from "../components/chart/LineChart";
-
+ 
 
 import ModelCard from "../components/ModelCard"
 
-import ava1 from "../assets/images/logo-shopify.svg";
-import ava2 from "../assets/images/logo-atlassian.svg";
-import ava3 from "../assets/images/logo-slack.svg";
-import ava4 from "../assets/images/logo-spotify.svg";
-import ava5 from "../assets/images/logo-jira.svg";
-import ava6 from "../assets/images/logo-invision.svg";
-import team1 from "../assets/images/team-1.jpg";
-import team2 from "../assets/images/team-2.jpg";
-import team3 from "../assets/images/team-3.jpg";
-import team4 from "../assets/images/team-4.jpg";
+ 
 import card from "../assets/images/00047-212406482.png";
 
 
@@ -45,21 +34,21 @@ import card from "../assets/images/00047-212406482.png";
 import axios from 'axios';
 const baseURL = process.env.REACT_APP_BASE_URL
 
-const getByPage = async () => {
+const getByPage = async (custId,pageIndex=0,pageSize=10) => {
   const { data } = await axios.post(baseURL + '/queryModelInfoForMainView.do',
-    {
-      "custId": "1685969357974",
-      "bussData": { "pageIndex": 0, "pageSize": 50 }
-    },
+  { custId, bussData :{ pageIndex, pageSize } } ,
     {
       headers: {
         'Content-Type': 'application/json'
       }
     })
-  if(data&&data.resultCode=='SUCCESS'&&data.bussData&&data.bussData.modelList){
-    const modelList=JSON.parse(data.bussData.modelList)
-    // console.log(modelList)
-    return modelList
+  if(data&&data.resultCode=='SUCCESS'&&data.loginStatus=="true"&&data.modelInfoList){
+    const modelInfoList=data.modelInfoList,totalNum=data.totalNum;
+    // console.log(totalNum,modelInfoList)
+    return {totalNum,modelInfoList}
+  }else{
+    // 失败
+    message.error('Login Fail')
   }
 }
 
@@ -73,17 +62,23 @@ function Home() {
 
   const onChange = (e) => console.log(`radio checked:${e.target.value}`);
 
-  const [modelData,setModelData]=useState([])
+  const [modelData,setModelData]=useState([]);
+  const [totalNum,setTotalNum]=useState(0);
 
   useEffect(() => {
-    getByPage().then(data=>{
-      data&& setModelData(data)
+    getByPage(custId,0,80).then(data=>{
+      if(data){
+        const {totalNum:n,modelInfoList}=data;
+        n&&setTotalNum(n)
+        modelInfoList&& setModelData(modelInfoList)
+      }
+     
     })
     // console.log('执行了')
   },[]);
 
   
-  console.log(modelData)
+  console.log(Array.from(modelData,m=>m.modelCover1))
   return (
     <>
       <div className="layout-content">
@@ -170,7 +165,7 @@ function Home() {
                  <div>
                  <Title level={5}>Models</Title>
                   <Paragraph className="lastweek">
-                  Total<span className="blue">20</span>
+                  Total<span className="blue">{totalNum}</span>
                   </Paragraph>
                   </div> 
                 </div>
@@ -190,7 +185,7 @@ function Home() {
 
                 </div>
 
-                  <div className="antd-pro-pages-dashboard-analysis-style-salesExtra">
+                  {/* <div className="antd-pro-pages-dashboard-analysis-style-salesExtra">
                     <Radio.Group onChange={onChange} defaultValue="ALL">
                       <Radio.Button value="ALL">ALL</Radio.Button>
                       <Radio.Button value="CHECKPOINT">CHECKPOINT</Radio.Button>
@@ -198,7 +193,7 @@ function Home() {
                       <Radio.Button value="CONTROLNET">CONTROLNET</Radio.Button>
                       <Radio.Button value="OTHER">OTHER</Radio.Button>
                     </Radio.Group>
-                  </div>
+                  </div> */}
 
                 </div>
               </div>
