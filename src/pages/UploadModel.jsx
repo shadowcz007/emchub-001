@@ -541,6 +541,7 @@ const uploadProps ={
               <Paragraph 
               style={{margin:0,paddingLeft:48}}
               copyable={{ tooltips: false,text:JSON.stringify({
+                "modelHashCode":"",
                 "guideLink":"", 
                 "paramsGuideLink":"", 
                 "sampleCodeLink":"", 
@@ -563,6 +564,7 @@ const uploadProps ={
                   allowClear
                   autoSize={{ minRows: 8, maxRows: 28 }} 
                   placeholder={JSON.stringify({
+                    "modelHashCode":"",
                     "guideLink":"", 
                     "paramsGuideLink":"", 
                     "sampleCodeLink":"", 
