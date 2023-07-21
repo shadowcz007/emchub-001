@@ -230,7 +230,7 @@ export default class SignIn extends Component {
                 <Link to="#">{<DribbbleOutlined />}</Link>
               </Menu.Item> */}
               <Menu.Item>
-                <Link to="#">{<TwitterOutlined />}</Link>
+                <Link to="https://twitter.com/EMCprotocol">{<TwitterOutlined />}</Link>
               </Menu.Item>
               {/* <Menu.Item>
                 <Link to="#">{<InstagramOutlined />}</Link>
@@ -248,7 +248,7 @@ export default class SignIn extends Component {
                 </Link>
               </Menu.Item> */}
               <Menu.Item>
-                <Link to="#">{<GithubOutlined />}</Link>
+                <Link to="https://github.com/EMCProtocol-dev">{<GithubOutlined />}</Link>
               </Menu.Item>
             </Menu>
             <p className="copyright">

@@ -17,7 +17,7 @@ import Paragraph from "antd/lib/typography/Paragraph";
 
 import ModelCard from "../components/ModelCard"
  
-import card from "../assets/images/00047-212406482.png";
+import card from "../assets/images/nft01.png";
 
 import axios from 'axios';
 const baseURL = process.env.REACT_APP_BASE_URL
@@ -116,16 +116,21 @@ function Home() {
                   <div className="h-full col-content p-20">
                     <div className="ant-muse">
                       <Text>Built by the development team of EMC Hub</Text>
-                      <Title level={5}>Model marketplace has been launched.</Title>
-                      <Paragraph className="lastweek mb-36">
-                      Model creators are welcome to upload their models to receive more rewards and create more value.
+                      <Title level={5}>EMC Genesis AI Computing Power RWA-NFT</Title>
+                      <Paragraph className="lastweek mb-36"
+                      
+                      ellipsis={ { rows:8, expandable: true, symbol: 'more' } }
+                      
+                      >
+                      EMC AI Computing Power RWA-NFT is the world's first AI computing power Real-World Asset Non-Fungible Token (RWA-NFT). The Genesis edition, limited to 80 units, is now available for sale. The introduction of EMC's AI computing power RWA-NFT represents the introduction of a new Web3 asset in the era of AI. This new form of asset will greatly expand the value of NFTs, anchored to the real-world asset of computing power, specifically GPU hardware and the various products and services it generates. The aggregated rights of EMC's AI computing power RWA-NFT will include actual GPU computing power usage rights, earnings from corresponding hardware assets, reduced market transaction fees, project airdrops, transaction fee dividends, node dividends, and more. The Genesis RWA-NFT includes the actual usage duration of four mainstream GPUs, 7 days and 30 days respectively. 
+From the perspective of RWA value alone, it holds significant investment value. Taking the A100 as an example, its 7-day price on AWS is $860, and its 30-day price is $3,686. In the AI & web3 era, computing power is the key to unlocking new narratives and assets. In the past 8 years, the demand for computing power has increased by 300,000 times. It is expected that by 2030, the average annual growth rate will exceed 34%, reaching 0.2Z FLOPs. The computing power network and trading market will be one of the primary infrastructures in the AI era. EMC RWA-NFT is the genesis RWA NFT collection launched by the EMC Lab.
                       </Paragraph>
                     </div>
                     <div className="card-footer">
-                      <a className="icon-move-right" href="https://github.com/EMCProtocol-dev">
+                      {/* <a className="icon-move-right" href="https://github.com/EMCProtocol-dev">
                         Read More
                         {<RightOutlined />}
-                      </a>
+                      </a> */}
                     </div>
                   </div>
                 </Col>

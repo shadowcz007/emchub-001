@@ -3055,6 +3055,16 @@ section.ant-layout.ant-layout-has-sider.layout-dashboard.layout-profile .header-
     background-color: #eee;
     padding: 12px;
     align-items: center;
+    user-select: none;
+}
+
+.emc-hub-logo-div,
+.emc-hub-logo-div:link,
+.emc-hub-logo-div:visited,
+.emc-hub-logo-div:hover,
+.emc-hub-logo-div:active {
+    text-decoration: none;
+    color: inherit;
 }
 
 .emc-hub-logo-div h1 {
