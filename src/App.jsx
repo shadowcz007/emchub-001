@@ -20,14 +20,18 @@ export default function App() {
   return (
     <div>
       
-     <div className="emc-hub-logo-div">
+      <div className="emc-hub-logo-div">
+      <Link to="/">
         <div className="emc-hub-logo" style={{backgroundImage: "url(" + GENLOGO + ")" }}></div>
+        </Link>
         <div style={{marginLeft: '18px'}}>
         <h1>EMC HUB</h1>
         <p className="emc-hub-logo-text">(infinity symbol), (square-shaped), (distinctive logo),3d,c4d,blender,uegel, generative art</p>
         </div>
 
      </div>
+    
+     
       {/* Routes nest inside one another. Nested route paths build upon
             parent route paths, and nested route elements render inside
             parent route elements. See the note about <Outlet> below. */}
